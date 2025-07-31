@@ -24,7 +24,7 @@ public class SampleData {
 		ss.addEntity(s2);
 		ss.addEntity(s3);
 		
-		//Add product to a Shelf
+		//Add product to a Shelf	
 		Shelf oldsShelf = ss.getEntityById(0);
 		Shelf newShelf = ss.getEntityById(0);
 		newShelf.setProductId(0);
