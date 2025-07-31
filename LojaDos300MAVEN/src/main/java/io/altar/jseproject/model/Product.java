@@ -11,6 +11,8 @@ public class Product extends Entity{
 	private double discount;
 	private double iva;
 	
+	public Product() {}
+	
 	// If when you create the product you don't want to add it to any shelves
 	public Product(String name, double pvp, double discount, double iva) {
 		this.name = name;
