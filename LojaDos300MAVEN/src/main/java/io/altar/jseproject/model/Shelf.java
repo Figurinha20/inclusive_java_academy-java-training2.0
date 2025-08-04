@@ -6,6 +6,8 @@ public class Shelf extends Entity{
 	private int productId = -1;
 	private double dailyPrice;
 	
+	public Shelf () {};
+	
 	//In case the shelf starts empty
 	public Shelf(int capacity, double dailyPrice) {
 		this.capacity = capacity;

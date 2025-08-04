@@ -10,10 +10,11 @@ public class ShelfService extends EntityService implements ShelfDBAccess{
 	static ProductService productService = new ProductService();
 	
 	public int addEntity(Shelf e) {
-		int id = SHELF_DB.addEntity(e);
 		if(e.getProductId() != -1) {
+			if (!productService.entityExists(e.getProductId())) return -1;
 			productService.addShelfToProduct(e);
 		}
+		int id = SHELF_DB.addEntity(e);
 		return id;
 	}
 	
