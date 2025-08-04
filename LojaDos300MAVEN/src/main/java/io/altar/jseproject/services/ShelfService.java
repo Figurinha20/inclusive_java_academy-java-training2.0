@@ -10,26 +10,35 @@ public class ShelfService extends EntityService implements ShelfDBAccess{
 	static ProductService productService = new ProductService();
 	
 	public int addEntity(Shelf e) {
+		int id = SHELF_DB.addEntity(e);
+		//Adding the shelf to the product if needed
 		if(e.getProductId() != -1) {
-			if (!productService.entityExists(e.getProductId())) return -1;
+			if (!productService.entityExists(e.getProductId())) {
+				SHELF_DB.deleteEntity(id);
+				return -1;
+			}
+			e = getEntityById(id);
 			productService.addShelfToProduct(e);
 		}
-		int id = SHELF_DB.addEntity(e);
 		return id;
 	}
 	
 	public void updateEntity(Shelf newShelf, Shelf oldShelf) {
 		//Se o produto mudou, temos de adicionar a prateleira ao array de prateleiras do produto
 		if(newShelf.getProductId() != oldShelf.getProductId()) {
+			removeOldShelfFromProduct(oldShelf);
 			productService.addShelfToProduct(newShelf);
-			Product oldProduct = productService.getEntityById(oldShelf.getProductId());
-			//Se o array de prateleiras no produto não estava vazia também temos de remover a prateleira do array de prateleiras do antigo produto
-			if (oldProduct != null && oldProduct.getShelfIds().size() > 0) {
-				if (oldProduct.removeShelfId(newShelf.getId()) == true) {productService.updateEntity(oldProduct);}
-			}
 		}
 		
 		SHELF_DB.updateEntity(newShelf);
+	}
+	
+	private void removeOldShelfFromProduct(Shelf shelf) {
+		Product oldProduct = productService.getEntityById(shelf.getProductId());
+		//Se o array de prateleiras no produto não estava vazia também temos de remover a prateleira do array de prateleiras do antigo produto
+		if (oldProduct != null && oldProduct.getShelfIds().size() > 0 && oldProduct.removeShelfId(shelf.getId()) == true ) {
+			productService.updateEntity(oldProduct);
+		}
 	}
 	
 	public Collection<Shelf> getAllEntities() {
@@ -49,7 +58,7 @@ public class ShelfService extends EntityService implements ShelfDBAccess{
 		//Se realmente removeu uma prateleira e a prateleira tinha um produto
 		if (removedShelf != null  && removedShelf.getProductId() != -1) {
 			Product product = productService.getEntityById(removedShelf.getProductId());
-			if (product.removeShelfId(removedShelf.getId()) == true) {productService.updateEntity(product);}
+			if ( product.removeShelfId(removedShelf.getId()) ) productService.updateEntity(product);
 		}
 		
 		return removedShelf;
