@@ -79,7 +79,15 @@ public class ProductController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(Product product) {
-		return Response.status(200).entity("Product " + ps.addEntity(product) + " created").build();
+		int created = ps.addEntity(product);
+		switch (created) {
+		case -1:
+			return Response.status(404).entity("One of the shelves was not found").build();
+		case -2:
+			return Response.status(409).entity("One of the shelves is not empty").build();
+		default:
+			return Response.status(200).entity("Product " + created + " created").build();
+		}
 	}
 	
 	

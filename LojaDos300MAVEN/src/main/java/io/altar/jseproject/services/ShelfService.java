@@ -10,16 +10,15 @@ public class ShelfService extends EntityService implements ShelfDBAccess{
 	static ProductService productService = new ProductService();
 	
 	public int addEntity(Shelf e) {
-		int id = SHELF_DB.addEntity(e);
 		//Adding the shelf to the product if needed
-		if(e.getProductId() != -1) {
-			if (!productService.entityExists(e.getProductId())) {
-				SHELF_DB.deleteEntity(id);
-				return -1;
-			}
-			e = getEntityById(id);
-			productService.addShelfToProduct(e);
+		if(e.getProductId() == -1) { //means the shelf doesn't have a product
+			return SHELF_DB.addEntity(e);
 		}
+		
+		if (!productService.entityExists(e.getProductId())) return -1; //ABORT, PRODUCT DOESN'T EVEN EXIST
+		int id = SHELF_DB.addEntity(e);
+		e = getEntityById(id);
+		productService.addShelfToProduct(e);
 		return id;
 	}
 	
@@ -31,6 +30,10 @@ public class ShelfService extends EntityService implements ShelfDBAccess{
 		}
 		
 		SHELF_DB.updateEntity(newShelf);
+	}
+	
+	public void updateEntityOnProductCreate(Shelf updatedShelf) {
+		SHELF_DB.updateEntity(updatedShelf);	
 	}
 	
 	private void removeOldShelfFromProduct(Shelf shelf) {
