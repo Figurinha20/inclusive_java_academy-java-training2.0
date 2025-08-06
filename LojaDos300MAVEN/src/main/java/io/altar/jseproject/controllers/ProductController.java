@@ -65,7 +65,7 @@ public class ProductController {
 	public Response update(@PathParam("id") int id, Product newProduct) {
 		Product product = ps.getEntityById(id);
 		if (product != null) {
-			newProduct.setId(id);
+//			newProduct.setId(id);
 			ps.updateEntity(newProduct);
 			return Response.status(200).entity("Product " + id + " updated").build();
 		}
