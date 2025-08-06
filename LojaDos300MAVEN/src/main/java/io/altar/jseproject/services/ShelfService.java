@@ -13,20 +13,19 @@ public class ShelfService extends EntityService implements ShelfDBAccess {
 	public int addEntity(Shelf e) {
 		// Adding the shelf to the product if needed
 		if (e.getProductId() == -1) { // means the shelf doesn't have a product
-			return SHELF_DB.addEntity(e);
+			return SHELF_DB.addEntity(e); //let's just create the shelf
 		}
-
-		if (!productService.entityExists(e.getProductId()))
-			return -1; // ABORT, PRODUCT DOESN'T EVEN EXIST
+		
+		//If we get here it means the shelf has a product
+		if (!productService.entityExists(e.getProductId())) return -1; // ABORT, PRODUCT DOESN'T EVEN EXIST
 		int id = SHELF_DB.addEntity(e);
 		e = getEntityById(id);
-		productService.addShelfToProduct(e);
+		productService.addShelfToProduct(e); //Let's add the shelf to the product
 		return id;
 	}
 
 	public void updateEntity(Shelf newShelf, Shelf oldShelf) {
-		// Se o produto mudou, temos de adicionar a prateleira ao array de prateleiras
-		// do produto
+		// Se o produto mudou, temos de adicionar a prateleira ao array de prateleiras do produto
 		if (newShelf.getProductId() != oldShelf.getProductId()) {
 			removeOldShelfFromProduct(oldShelf);
 			if (newShelf.getProductId() >= 0) {
@@ -42,12 +41,11 @@ public class ShelfService extends EntityService implements ShelfDBAccess {
 	}
 
 	private void removeOldShelfFromProduct(Shelf shelf) {
-		Product oldProduct = productService.getEntityById(shelf.getProductId());
+		Product product = productService.getEntityById(shelf.getProductId());
 		// Se o array de prateleiras no produto não estava vazia também temos de remover
 		// a prateleira do array de prateleiras do antigo produto
-		if (oldProduct != null && oldProduct.getShelfIds().size() > 0
-				&& oldProduct.removeShelfId(shelf.getId()) == true) {
-			productService.updateEntity(oldProduct);
+		if (product != null && product.getShelfIds().size() > 0 && product.removeShelfId(shelf.getId()) == true) {
+			productService.updateEntity(product);
 		}
 	}
 

@@ -56,7 +56,6 @@ public class ShelfController {
 	public Response update(Shelf newShelf) {
 		Shelf oldShelf = ss.getEntityById(newShelf.getId());
 		if (oldShelf != null) {
-			newShelf.setId(newShelf.getId());
 			ss.updateEntity(newShelf, oldShelf);
 			return Response.status(200).entity("Shelf " + newShelf.getId() + " updated").build();
 		}
@@ -70,11 +69,11 @@ public class ShelfController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(Shelf shelf) {
 		int created = ss.addEntity(shelf);
-		if (created != -1) {
-			return Response.status(200).entity("Shelf " + created + " created").build();
-		}
-		else {
+		switch (created) {
+		case -1:
 			return Response.status(404).entity("Product " + shelf.getProductId() + " not found").build();
+		default :
+			return Response.status(200).entity("Shelf " + created + " created").build();
 		}
 	}
 	
