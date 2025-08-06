@@ -31,6 +31,12 @@ public class ProductService extends EntityService implements ProductDBAccess {
 	}
 	
 	public void updateEntity(Product e) {
+		Product oldProduct = getEntityById(e.getId());
+		if (!oldProduct.getShelfIds().equals(e.getShelfIds())) {
+			shelfService.updateProductOnShelfs(e,
+					oldProduct.getShelfIds(),
+					e.getShelfIds());
+		}
 		PRODUCT_DB.updateEntity(e);
 	}
 	
