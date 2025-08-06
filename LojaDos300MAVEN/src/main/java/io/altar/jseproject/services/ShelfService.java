@@ -63,16 +63,10 @@ public class ShelfService extends EntityService implements ShelfDBAccess {
 		return SHELF_DB.getSize();
 	}
 
-	public Shelf deleteEntity(int id) {
-		Shelf removedShelf = SHELF_DB.deleteEntity(id);
-		// Se realmente removeu uma prateleira e a prateleira tinha um produto
-		if (removedShelf != null && removedShelf.getProductId() != -1) {
-			Product product = productService.getEntityById(removedShelf.getProductId());
-			if (product.removeShelfId(removedShelf.getId()))
-				productService.updateEntity(product);
-		}
-
-		return removedShelf;
+	public Shelf deleteEntity(int id) {			
+		if (getEntityById(id).getProductId() != -1) return null; //ABORT!! SHELF ISN'T EMPTY
+		
+		return SHELF_DB.deleteEntity(id);
 	}
 
 	public boolean entityExists(int id) {

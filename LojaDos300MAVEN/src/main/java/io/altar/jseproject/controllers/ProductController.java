@@ -33,7 +33,6 @@ public class ProductController {
 	}
 	
 	@GET
-	@Path("getAllProducts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllProducts() {
 		Collection<Product> products = ps.getAllEntities();
@@ -46,7 +45,7 @@ public class ProductController {
 	}
 	
 	@GET																																		
-	@Path("get/{id}")
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProductById(@PathParam("id") int id) {
 		Product product = ps.getEntityById(id);
@@ -59,23 +58,21 @@ public class ProductController {
 	}
 	
 	@PUT
-	@Path("update/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response update(@PathParam("id") int id, Product newProduct) {
-		Product product = ps.getEntityById(id);
+	public Response update(Product newProduct) {
+		Product product = ps.getEntityById(newProduct.getId());
 		if (product != null) {
 //			newProduct.setId(id);
 			ps.updateEntity(newProduct);
-			return Response.status(200).entity("Product " + id + " updated").build();
+			return Response.status(200).entity("Product " + newProduct.getId() + " updated").build();
 		}
 		else {
-			return Response.status(404).entity("Product " + id + " not found").build();
+			return Response.status(404).entity("Product " + newProduct.getId() + " not found").build();
 		}
 	}
 	
 	@POST
-	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(Product product) {
@@ -92,15 +89,19 @@ public class ProductController {
 	
 	
 	@DELETE
-	@Path("delete/{id}")
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(@PathParam("id") int id) {
+		if(ps.getEntityById(id) == null) {
+			return Response.status(404).entity("Product " + id + " not found").build();
+		}
+		
 		Product product = ps.deleteEntity(id);
 		if (product != null) {
 			return Response.status(200).entity("Product " + id + " removed").build();
 		}
 		else {
-			return Response.status(404).entity("The Product " + id + " was not found").build();
+			return Response.status(409).entity("The Product " + id + " is in shelfs, you need to make it empty first.").build();
 		}
 	}
 }

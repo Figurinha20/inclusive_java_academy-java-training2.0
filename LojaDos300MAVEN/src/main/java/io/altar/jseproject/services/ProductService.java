@@ -53,6 +53,8 @@ public class ProductService extends EntityService implements ProductDBAccess {
 	}
 	
 	public Product deleteEntity(int id) {
+		if(getEntityById(id).getShelfIds().size() > 0) return null; //ABORT! PRODUCT IS IN SHELFS
+		
 		return PRODUCT_DB.deleteEntity(id);
 	}
 	
