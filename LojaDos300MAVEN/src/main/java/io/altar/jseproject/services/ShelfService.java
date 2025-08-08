@@ -3,12 +3,19 @@ package io.altar.jseproject.services;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import io.altar.jseproject.model.Product;
 import io.altar.jseproject.model.Shelf;
-import io.altar.jseproject.repositories.dbAccess.ShelfDBAccess;
+import io.altar.jseproject.repositories.ShelfRepository;
 
-public class ShelfService extends EntityService implements ShelfDBAccess {
-	static ProductService productService = new ProductService();
+@ApplicationScoped
+public class ShelfService extends EntityService  {
+	@Inject
+	ShelfRepository SHELF_DB;
+	@Inject
+	ProductService productService;
 
 	public int addEntity(Shelf e) {
 		// Adding the shelf to the product if needed

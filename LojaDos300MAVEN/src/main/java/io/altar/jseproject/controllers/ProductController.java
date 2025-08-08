@@ -1,7 +1,9 @@
 package io.altar.jseproject.controllers;
 
 import java.util.Collection;
-
+ 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,10 +19,13 @@ import javax.ws.rs.core.UriInfo;
 
 import io.altar.jseproject.model.Product;
 import io.altar.jseproject.services.ProductService;
-	
+
+@RequestScoped
 @Path("products")
 public class ProductController {
-	private ProductService ps = new ProductService();
+	
+	@Inject
+	ProductService ps;
 
 	@Context
 	protected UriInfo context;

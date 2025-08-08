@@ -2,6 +2,8 @@ package io.altar.jseproject.controllers;
 
 import java.util.Collection;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,10 +19,13 @@ import javax.ws.rs.core.UriInfo;
 
 import io.altar.jseproject.model.Shelf;
 import io.altar.jseproject.services.ShelfService;
-	
+
+@RequestScoped
 @Path("shelves")
 public class ShelfController {
-	private ShelfService ss = new ShelfService();
+	
+	@Inject
+	ShelfService ss;
 
 	@Context
 	protected UriInfo context;
