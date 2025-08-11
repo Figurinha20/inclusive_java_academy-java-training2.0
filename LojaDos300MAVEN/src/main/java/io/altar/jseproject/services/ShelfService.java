@@ -69,7 +69,9 @@ public class ShelfService extends EntityService  {
 	}
 
 	public Shelf deleteEntity(int id) {			
-		if (getEntityById(id).getProductId() != -1) return null; //ABORT!! SHELF ISN'T EMPTY
+		if (getEntityById(id).getProductId() != -1) {
+			throw new UnsupportedOperationException("The Shelf " + id + " has a product, you need to make it empty first."); //ABORT!! SHELF ISN'T EMPTY
+		}
 		
 		return SHELF_DB.deleteEntity(id);
 	}

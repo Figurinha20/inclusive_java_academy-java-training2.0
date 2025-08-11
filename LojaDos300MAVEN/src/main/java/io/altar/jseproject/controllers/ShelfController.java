@@ -90,13 +90,13 @@ public class ShelfController {
 		if(ss.getEntityById(id) == null) {
 			return Response.status(404).entity("Shelf " + id + " not found").build();
 		}
-		
-		Shelf shelf = ss.deleteEntity(id);
-		if (shelf != null) {
+	
+		try {
+			ss.deleteEntity(id);
 			return Response.status(200).entity("Shelf " + id + " removed").build();
 		}
-		else {
-			return Response.status(409).entity("The Shelf " + id + " has a product, you need to make it empty first.").build();
+		catch (UnsupportedOperationException  e) {
+			return Response.status(409).entity(e.getMessage()).build();
 		}
 	}
 }
