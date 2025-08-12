@@ -3,12 +3,24 @@ package io.altar.jseproject.model;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.mail.Store;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name = Product.GET_ALL_PRODUCTS, query = "SELECT p FROM Product p"),
+	@NamedQuery(name = Product.GET_PRODUCT_COUNT, query = "SELECT COUNT(p) FROM Product p")
+	})
 public class Product extends Entity_ {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String GET_ALL_PRODUCTS = "getAllProducts";
+	public static final String GET_PRODUCT_COUNT = "getProductCount";
+
 	private String name;
 	private ArrayList<Integer> shelfIds = new ArrayList<Integer>();
 	private double pvp;

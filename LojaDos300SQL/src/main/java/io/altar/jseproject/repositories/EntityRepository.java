@@ -1,45 +1,51 @@
 package io.altar.jseproject.repositories;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.SerializationUtils;
-
 import java.util.Collection;
-import java.util.HashMap;
-import io.altar.jseproject.model.Entity;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import io.altar.jseproject.model.Entity_;
 import io.altar.jseproject.repositories.interfaces.EntityInterface;
 
-public abstract class EntityRepository<T extends Entity> implements EntityInterface<T> {
-	private Map<Integer, T> db = new HashMap<Integer, T>();
-	private int currentId = 0;
+public abstract class EntityRepository<T extends Entity_> implements EntityInterface<T> {
+	protected abstract Class<T> getEntityClass();
+
+	@PersistenceContext(unitName = "database")
+	protected EntityManager entityManager;
 	
 	public int addEntity(T e) {
-		e.setId(currentId);
-		db.put(currentId, e);
-		return currentId++;
+		return entityManager.merge(e).getId();
 	}
 	
 	public void updateEntity(T e) {
-		db.put(e.getId(), e);
+		entityManager.merge(e);
 	}
 	
+	public abstract String getAll();
 	public Collection<T> getAllEntities() {
-		return db.values();
+		return entityManager.createNamedQuery(getAll(), getEntityClass()).getResultList();
 	}
+	
 	
 	public T getEntityById(int id) {
-		return SerializationUtils.clone(db.get(id));
+		return entityManager.find(getEntityClass(), id);
 	}
 	
+	public abstract String getEntityCount();
 	public int getSize() {
-		return db.size();
+		return entityManager.createNamedQuery(getEntityCount(), Integer.class).getSingleResult();
 	}
 	
 	public T deleteEntity(int id) {
-		return db.remove(id);
+		T e = getEntityById(id);
+		if (e != null) {
+			entityManager.remove(e);
+		}
+		return e;
 	}
 	
 	public boolean entityExists(int id) {
-		return db.get(id) != null ? true : false;
+		return getEntityById(id) != null ? true : false;
 	}
 }

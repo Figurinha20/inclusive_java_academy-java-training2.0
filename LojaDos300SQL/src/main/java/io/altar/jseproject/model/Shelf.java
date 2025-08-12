@@ -1,10 +1,19 @@
 package io.altar.jseproject.model;
 
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
+@NamedQueries({ 
+	@NamedQuery(name = Shelf.GET_ALL_SHELVES, query = "SELECT s FROM Shelf s"),
+	@NamedQuery(name = Shelf.GET_SHELF_COUNT, query = "SELECT COUNT(s) FROM Shelf s") 
+	})
 public class Shelf extends Entity_ {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String GET_ALL_SHELVES = "getAllShelves";
+	public static final String GET_SHELF_COUNT = "getShelfCount";
 	
 	private int capacity;
 	private int productId = -1;
