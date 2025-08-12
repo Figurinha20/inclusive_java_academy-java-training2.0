@@ -2,27 +2,15 @@ package io.altar.jseproject.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@SuppressWarnings("serial")
-public class Shelf extends Entity {
+
+public class Shelf extends Entity_ {
+	private static final long serialVersionUID = 1L;
+	
 	private int capacity;
 	private int productId = -1;
 	private double dailyPrice;
 
-	public Shelf() {
-	};
-
-	// In case the shelf starts empty
-	public Shelf(int capacity, double dailyPrice) {
-		this.capacity = capacity;
-		this.dailyPrice = dailyPrice;
-	}
-
-	// In case the shelf starts with a product
-	public Shelf(int capacity, int productId, double dailyPrice) {
-		this.productId = productId;
-		this.capacity = capacity;
-		this.dailyPrice = dailyPrice;
-	}
+	public Shelf() {};
 
 	@JsonIgnore
 	public boolean isEmpty() {

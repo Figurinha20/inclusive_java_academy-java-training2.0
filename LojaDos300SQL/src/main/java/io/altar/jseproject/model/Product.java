@@ -4,34 +4,18 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Entity;
 
-@SuppressWarnings("serial")
-public class Product extends Entity {
+@Entity
+public class Product extends Entity_ {
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private ArrayList<Integer> shelfIds = new ArrayList<Integer>();
 	private double pvp;
 	private double discount;
 	private double iva;
 
-	public Product() {
-	}
-
-	// If when you create the product you don't want to add it to any shelves
-	public Product(String name, double pvp, double discount, double iva) {
-		this.name = name;
-		this.pvp = pvp;
-		this.discount = discount;
-		this.iva = iva;
-	}
-
-	// If when you create the product you want to add it to shelves
-	public Product(String name, ArrayList<Integer> shelfIds, double pvp, double discount, double iva) {
-		this.name = name;
-		this.shelfIds = shelfIds;
-		this.pvp = pvp;
-		this.discount = discount;
-		this.iva = iva;
-	}
+	public Product() {}
 
 	@JsonIgnore
 	public String getRealPrice() {
