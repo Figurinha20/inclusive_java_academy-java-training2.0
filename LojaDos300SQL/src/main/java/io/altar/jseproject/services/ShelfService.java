@@ -4,28 +4,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.altar.jseproject.model.Product;
 import io.altar.jseproject.model.Shelf;
 import io.altar.jseproject.repositories.ShelfRepository;
 
-@ApplicationScoped
-public class ShelfService extends EntityService  {
+@Transactional
+@RequestScoped
+public class ShelfService  {
 	@Inject
-	ShelfRepository SHELF_DB;
+	ShelfRepository shelfRepo;
 	@Inject
 	ProductService productService;
 
 	public int addEntity(Shelf e) {
 		// Adding the shelf to the product if needed
 		if (e.getProductId() == -1) { // means the shelf doesn't have a product
-			return SHELF_DB.addEntity(e); //let's just create the shelf
+			return shelfRepo.addEntity(e); //let's just create the shelf
 		}
 		
 		//If we get here it means the shelf has a product
 		if (!productService.entityExists(e.getProductId())) return -1; // ABORT, PRODUCT DOESN'T EVEN EXIST
-		int id = SHELF_DB.addEntity(e);
+		int id = shelfRepo.addEntity(e);
 		e = getEntityById(id);
 		productService.addShelfToProduct(e); //Let's add the shelf to the product
 		return id;
@@ -40,11 +43,11 @@ public class ShelfService extends EntityService  {
 			}
 		}
 
-		SHELF_DB.updateEntity(newShelf);
+		shelfRepo.updateEntity(newShelf);
 	}
 
 	public void updateEntityOnProductCreate(Shelf updatedShelf) {
-		SHELF_DB.updateEntity(updatedShelf);
+		shelfRepo.updateEntity(updatedShelf);
 	}
 
 	private void removeOldShelfFromProduct(Shelf shelf) {
@@ -57,15 +60,15 @@ public class ShelfService extends EntityService  {
 	}
 
 	public Collection<Shelf> getAllEntities() {
-		return SHELF_DB.getAllEntities();
+		return shelfRepo.getAllEntities();
 	}
 
 	public Shelf getEntityById(int id) {
-		return SHELF_DB.getEntityById(id);
+		return shelfRepo.getEntityById(id);
 	}
 
 	public int getSize() {
-		return SHELF_DB.getSize();
+		return shelfRepo.getSize();
 	}
 
 	public Shelf deleteEntity(int id) {			
@@ -73,11 +76,11 @@ public class ShelfService extends EntityService  {
 			throw new UnsupportedOperationException("The Shelf " + id + " has a product, you need to make it empty first."); //ABORT!! SHELF ISN'T EMPTY
 		}
 		
-		return SHELF_DB.deleteEntity(id);
+		return shelfRepo.deleteEntity(id);
 	}
 
 	public boolean entityExists(int id) {
-		return SHELF_DB.entityExists(id);
+		return shelfRepo.entityExists(id);
 	}
 
 	public boolean productExists(int id) {
@@ -87,16 +90,16 @@ public class ShelfService extends EntityService  {
 	public void updateProductOnShelfs(Product product, ArrayList<Integer> shelfsOld, ArrayList<Integer> shelfsNew) {
 		for (int shelfId : shelfsOld) {
 			if (shelfId >= 0 && shelfsNew.indexOf(shelfId) == -1) {
-				Shelf shelf = SHELF_DB.getEntityById(shelfId);
+				Shelf shelf = shelfRepo.getEntityById(shelfId);
 				shelf.setProductId((int) -1);
-				SHELF_DB.updateEntity(shelf);
+				shelfRepo.updateEntity(shelf);
 			}
 		}
 		for (int shelfId : shelfsNew) {
 			if (shelfId >= 0 && shelfsOld.indexOf(shelfId) == -1) {
-				Shelf shelf = SHELF_DB.getEntityById(shelfId);
+				Shelf shelf = shelfRepo.getEntityById(shelfId);
 				shelf.setProductId(product.getId());
-				SHELF_DB.updateEntity(shelf);
+				shelfRepo.updateEntity(shelf);
 			}
 		}
 

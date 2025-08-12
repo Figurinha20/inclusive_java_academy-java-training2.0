@@ -4,22 +4,24 @@ import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.altar.jseproject.model.Product;
 import io.altar.jseproject.model.Shelf;
 import io.altar.jseproject.repositories.ProductRepository;
 
+@Transactional
 @ApplicationScoped
-public class ProductService extends EntityService {
+public class ProductService {
 	@Inject
-	ProductRepository PRODUCT_DB;
+	ProductRepository productRepo;
 	@Inject
 	ShelfService shelfService;
 	
 	public int addEntity(Product e) {
 		//Adding the product to the shelf if needed
 		if(e.getShelfIds().size() == 0) { //means the product isn't in any shelf
-			return PRODUCT_DB.addEntity(e);
+			return productRepo.addEntity(e);
 		}
 		
 		for (int shelfId : e.getShelfIds()) {
@@ -27,7 +29,7 @@ public class ProductService extends EntityService {
 			if (!shelfService.getEntityById(shelfId).isEmpty()) return -2; //ABORT, SHELF ISN'T EMPTY
 		}
 		
-		int id = PRODUCT_DB.addEntity(e);
+		int id = productRepo.addEntity(e);
 		//add the product we just created to the shelves passed on create
 		for (int shelfId : e.getShelfIds()) {
 			Shelf updatedShelf = shelfService.getEntityById(shelfId);
@@ -44,29 +46,29 @@ public class ProductService extends EntityService {
 					oldProduct.getShelfIds(),
 					e.getShelfIds());
 		}
-		PRODUCT_DB.updateEntity(e);
+		productRepo.updateEntity(e);
 	}
 		
 	public Collection<Product> getAllEntities() {
-		return PRODUCT_DB.getAllEntities();
+		return productRepo.getAllEntities();
 	}
 	
 	public Product getEntityById(int id) {
-		return PRODUCT_DB.getEntityById(id);
+		return productRepo.getEntityById(id);
 	}
 	
 	public int getSize() {
-		return PRODUCT_DB.getSize();
+		return productRepo.getSize();
 	}
 	
 	public Product deleteEntity(int id) {
 		if(getEntityById(id).getShelfIds().size() > 0) return null; //ABORT! PRODUCT IS IN SHELFS
 		
-		return PRODUCT_DB.deleteEntity(id);
+		return productRepo.deleteEntity(id);
 	}
 	
 	public boolean entityExists(int id) {
-		return PRODUCT_DB.entityExists(id);
+		return productRepo.entityExists(id);
 	}
 	
 	public boolean shelfExists(int id) {
