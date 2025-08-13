@@ -32,7 +32,7 @@ public class RepoTests {
 	@DisplayName("Test set product id")
 	@Order(1)
 	void testSetProductId() {
-		Product p = new Product(null, null, 0, 0, 0);
+		Product p = new Product();
 		assertEquals(0, p.getId(), "Defaul ID should be 0");
 		assertDoesNotThrow(() -> {
 			p.setId(1);
@@ -43,7 +43,7 @@ public class RepoTests {
 	@Order(2)
 	@DisplayName("Test set product id with invalid id")
 	void testSetProductIdWithInvalidId() {
-		Product p = new Product(null, null, 0, 0, 0);
+		Product p = new Product();
 		assertThrows(RuntimeException.class, () -> {
 			p.setId(-2);
 		});
@@ -53,7 +53,7 @@ public class RepoTests {
 	@Order(3)
 	@DisplayName("Test set product id after valid id")
 	void testSetProductIdAfterValidId() {
-		Product p = new Product(null, null, 0, 0, 0);
+		Product p = new Product();
 		p.setId(1);
 		assertThrows(RuntimeException.class, () -> {
 			p.setId(2);
@@ -67,7 +67,7 @@ public class RepoTests {
 	@Order(4)
 	@DisplayName("Test get clone from repository")
 	 void testGetCloneFromRepo() {
-	  Product originalProduct = new Product("Cola", 0.9, 5, 0);
+	  Product originalProduct = new Product();
 	  ps.addEntity(originalProduct);
 	  Product productFormRepo1 = ps.getEntityById(0);
 	  Product productFormRepo2 = ps.getEntityById(0);
@@ -84,15 +84,15 @@ public class RepoTests {
 	@DisplayName("Add Default Data for tests")
 	void addDefaultData() {
 		//Populate "DB" with data
-		Product p1 = new Product("Cola", 0.9, 5, 23);
-		Product p2 = new Product("Pepsi", 0.8, 5, 23);
-		Product p3 = new Product("Pepsi Max", 0.75, 5, 12);
+		Product p1 = new Product();
+		Product p2 = new Product();
+		Product p3 = new Product();
 		ps.addEntity(p1);
 		ps.addEntity(p2);
 		ps.addEntity(p3);
-		Shelf s1 = new Shelf(200, 24);
-		Shelf s2 = new Shelf(400, 38);
-		Shelf s3 = new Shelf(300, 1, 30);
+		Shelf s1 = new Shelf();
+		Shelf s2 = new Shelf();
+		Shelf s3 = new Shelf();
 		ss.addEntity(s1);
 		ss.addEntity(s2);
 		ss.addEntity(s3);
@@ -130,10 +130,11 @@ public class RepoTests {
 	
 	@Test
 	@Order(8)
-	@DisplayName("Test if shelf is added to product on create")
-	void testIfShelfIsAddedToProductOnCreate() {
+	@DisplayName("Test if shelf is added to product")
+	void testIfShelfIsAddedToProduct() {
 		//create a new shelf with the first product
-		Shelf s4 = new Shelf(600, 0, 50);
+		Shelf s4 = new Shelf();
+		s4.setProductId(0);
 		ss.addEntity(s4);
 		
 		assertEquals(2, ps.getEntityById(0).getShelfIds().size());

@@ -3,7 +3,6 @@ package io.altar.jseproject.model;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import javax.mail.Store;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
