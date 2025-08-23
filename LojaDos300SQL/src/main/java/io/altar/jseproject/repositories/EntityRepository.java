@@ -5,7 +5,7 @@ import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import io.altar.jseproject.model.Entity_;
+import io.altar.jseproject.models.entities.Entity_;
 import io.altar.jseproject.repositories.interfaces.EntityInterface;
 
 public abstract class EntityRepository<T extends Entity_> implements EntityInterface<T> {

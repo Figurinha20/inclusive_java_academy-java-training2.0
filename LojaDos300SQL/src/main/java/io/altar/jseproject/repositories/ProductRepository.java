@@ -2,7 +2,7 @@ package io.altar.jseproject.repositories;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.altar.jseproject.model.Product;
+import io.altar.jseproject.models.entities.Product;
 
 
 @ApplicationScoped

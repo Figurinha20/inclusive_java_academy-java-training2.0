@@ -17,7 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import io.altar.jseproject.model.Shelf;
+import io.altar.jseproject.models.DTOs.ShelfDTO;
+import io.altar.jseproject.models.converters.ShelfConverter;
+import io.altar.jseproject.models.entities.Shelf;
 import io.altar.jseproject.services.ShelfService;
 
 @RequestScoped
@@ -25,7 +27,10 @@ import io.altar.jseproject.services.ShelfService;
 public class ShelfController {
 	
 	@Inject
-	ShelfService ss;
+	ShelfService service;
+	
+	@Inject
+	ShelfConverter converter;
 
 	@Context
 	protected UriInfo context;
@@ -33,9 +38,9 @@ public class ShelfController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllProducts() {
-		Collection<Shelf> shelves = ss.getAllEntities();
+		Collection<Shelf> shelves = service.getAllEntities();
 		if (shelves.size() > 0) {
-			return Response.status(200).entity(shelves).build();
+			return Response.status(200).entity(converter.toDTOArray(shelves)).build();
 		}
 		else {
 			return Response.status(200).entity("There are no Shelves yet").build();
@@ -46,9 +51,9 @@ public class ShelfController {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getShelfById(@PathParam("id") int id) {
-		Shelf shelf = ss.getEntityById(id);
+		Shelf shelf = service.getEntityById(id);
 		if (shelf != null) {
-			return Response.status(200).entity(shelf).build();
+			return Response.status(200).entity(converter.toDTO(shelf)).build();
 		}
 		else {
 			return Response.status(404).entity("Shelf " + id + " not found").build();
@@ -58,10 +63,11 @@ public class ShelfController {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response update(Shelf newShelf) {
-		Shelf oldShelf = ss.getEntityById(newShelf.getId());
+	public Response update(ShelfDTO shelfDTO) {
+		Shelf oldShelf = service.getEntityById(shelfDTO.getId());
+		Shelf newShelf = converter.toEntity(shelfDTO);
 		if (oldShelf != null) {
-			ss.updateEntity(newShelf, oldShelf);
+			service.updateEntity(newShelf, oldShelf);
 			return Response.status(200).entity("Shelf " + newShelf.getId() + " updated").build();
 		}
 		else {
@@ -72,11 +78,12 @@ public class ShelfController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response create(Shelf shelf) {
-		int created = ss.addEntity(shelf);
+	public Response create(ShelfDTO shelfDTO) {
+		Shelf shelf = converter.toEntity(shelfDTO);
+		int created = service.addEntity(shelf);
 		switch (created) {
 		case -1:
-			return Response.status(404).entity("Product " + shelf.getProductId() + " not found").build();
+			return Response.status(404).entity("Product " + shelf.getProduct().getId() + " not found").build();
 		default :
 			return Response.status(200).entity("Shelf " + created + " created").build();
 		}
@@ -87,12 +94,12 @@ public class ShelfController {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response delete(@PathParam("id") int id) {
-		if(ss.getEntityById(id) == null) {
+		if(service.getEntityById(id) == null) {
 			return Response.status(404).entity("Shelf " + id + " not found").build();
 		}
 	
 		try {
-			ss.deleteEntity(id);
+			service.deleteEntity(id);
 			return Response.status(200).entity("Shelf " + id + " removed").build();
 		}
 		catch (UnsupportedOperationException  e) {

@@ -2,7 +2,7 @@ package io.altar.jseproject.repositories.interfaces;
 
 import java.util.Collection;
 
-import io.altar.jseproject.model.Entity_;
+import io.altar.jseproject.models.entities.Entity_;
 
 public abstract interface EntityInterface<T extends Entity_> {
 	public int addEntity(T e);		

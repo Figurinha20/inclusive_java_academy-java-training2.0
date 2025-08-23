@@ -2,7 +2,7 @@ package io.altar.jseproject.repositories;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.altar.jseproject.model.Shelf;
+import io.altar.jseproject.models.entities.Shelf;
 
 @ApplicationScoped
 public class ShelfRepository extends EntityRepository<Shelf>{

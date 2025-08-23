@@ -1,8 +1,9 @@
-package io.altar.jseproject.model;
+package io.altar.jseproject.models.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,23 +18,24 @@ public class Shelf extends Entity_ {
 	public static final String GET_ALL_SHELVES = "getAllShelves";
 	public static final String GET_SHELF_COUNT = "getShelfCount";
 	
-	private int capacity;
-	private int productId = -1;
+	private int capacity;	
+	@OneToOne
+	private Product product;
 	private double dailyPrice;
 
 	public Shelf() {};
 
 	@JsonIgnore
 	public boolean isEmpty() {
-		return (productId == -1 ? true : false);
+		return (product == null ? true : false);
 	}
 
-	public int getProductId() {
-		return productId;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProductId(int productId) {
-		this.productId = productId;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 	public int getCapacity() {

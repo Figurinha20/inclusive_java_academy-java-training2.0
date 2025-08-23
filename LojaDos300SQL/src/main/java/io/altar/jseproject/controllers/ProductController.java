@@ -17,7 +17,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import io.altar.jseproject.model.Product;
+import io.altar.jseproject.models.DTOs.ProductDTO;
+import io.altar.jseproject.models.converters.ProductConverter;
+import io.altar.jseproject.models.entities.Product;
 import io.altar.jseproject.services.ProductService;
 
 @RequestScoped
@@ -26,6 +28,9 @@ public class ProductController {
 	
 	@Inject
 	ProductService ps;
+	
+	@Inject
+	ProductConverter pc;
 
 	@Context
 	protected UriInfo context;
@@ -42,7 +47,7 @@ public class ProductController {
 	public Response getAllProducts() {
 		Collection<Product> products = ps.getAllEntities();
 		if (products.size() > 0) {
-			return Response.status(200).entity(products).build();
+			return Response.status(200).entity(pc.toDTOArray(products)).build();
 		}
 		else {
 			return Response.status(200).entity("There are no Products yet").build();
@@ -55,7 +60,7 @@ public class ProductController {
 	public Response getProductById(@PathParam("id") int id) {
 		Product product = ps.getEntityById(id);
 		if (product != null) {
-			return Response.status(200).entity(product).build();
+			return Response.status(200).entity(pc.toDTO(product)).build();
 		}
 		else {
 			return Response.status(404).entity("Product " + id + " not found").build();
@@ -65,9 +70,10 @@ public class ProductController {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response update(Product newProduct) {
-		Product product = ps.getEntityById(newProduct.getId());
-		if (product != null) {
+	public Response update(ProductDTO productDTO) {
+		Product oldProduct = ps.getEntityById(productDTO.getId());
+		Product newProduct = pc.toEntity(productDTO);
+		if (oldProduct != null) {
 //			newProduct.setId(id);
 			ps.updateEntity(newProduct);
 			return Response.status(200).entity("Product " + newProduct.getId() + " updated").build();
@@ -80,7 +86,8 @@ public class ProductController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response create(Product product) {
+	public Response create(ProductDTO productDTO) {
+		Product product = pc.toEntity(productDTO);
 		int created = ps.addEntity(product);
 		switch (created) {
 		case -1:
@@ -100,7 +107,6 @@ public class ProductController {
 		if(ps.getEntityById(id) == null) {
 			return Response.status(404).entity("Product " + id + " not found").build();
 		}
-		
 		Product product = ps.deleteEntity(id);
 		if (product != null) {
 			return Response.status(200).entity("Product " + id + " removed").build();

@@ -1,4 +1,4 @@
-package io.altar.jseproject.model;
+package io.altar.jseproject.models.entities;
 
 import java.io.Serializable;
 
@@ -10,10 +10,11 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Entity_ implements Serializable {
 	private static final long serialVersionUID = 1L;	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	
 	public int getId() {
 		return id;
 	}

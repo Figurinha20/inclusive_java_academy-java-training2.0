@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import io.altar.jseproject.model.Product;
+import io.altar.jseproject.models.entities.Product;
 import io.altar.jseproject.services.ProductService;
 import io.altar.jseproject.services.ShelfService;
 import io.quarkus.test.junit.QuarkusTest;

@@ -1,11 +1,15 @@
-package io.altar.jseproject.model;
+package io.altar.jseproject.models.entities;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,7 +25,8 @@ public class Product extends Entity_ {
 	public static final String GET_PRODUCT_COUNT = "getProductCount";
 
 	private String name;
-	private ArrayList<Integer> shelfIds = new ArrayList<Integer>();
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = false)
+	private List<Shelf> shelves;
 	private double pvp;
 	private double discount;
 	private double iva;
@@ -42,22 +47,22 @@ public class Product extends Entity_ {
 		this.name = name;
 	}
 
-	public ArrayList<Integer> getShelfIds() {
-		return shelfIds;
+	public List<Shelf> getShelves() {
+		return shelves;
 	}
 
 	// method to add a single shelfId
-	public void addShelfId(int shelfId) {
-		this.shelfIds.add(shelfId);
+	public void addShelfId(Shelf shelf) {
+		this.shelves.add(shelf);
 	}
 
-	public void setShelfIds(ArrayList<Integer> shelfIds) {
-		this.shelfIds = shelfIds;
+	public void setShelves(List<Shelf> shelves) {
+		this.shelves = shelves;
 	}
 
 	// remove a single shelf Id from the array
-	public boolean removeShelfId(int id) {
-		return shelfIds.removeIf(idToRemove -> idToRemove == id);
+	public boolean removeShelf(Shelf shelf) {
+		return shelves.removeIf(shelfToRemove -> shelfToRemove.getId() == shelf.getId());
 	}
 
 	public double getDiscount() {
