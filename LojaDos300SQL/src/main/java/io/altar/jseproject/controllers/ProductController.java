@@ -60,7 +60,7 @@ public class ProductController {
 	public Response getProductById(@PathParam("id") int id) {
 		Product product = ps.getEntityById(id);
 		if (product != null) {
-			return Response.status(200).entity(pc.toDTO(product)).build();
+			return Response.status(200).entity(product).build();
 		}
 		else {
 			return Response.status(404).entity("Product " + id + " not found").build();

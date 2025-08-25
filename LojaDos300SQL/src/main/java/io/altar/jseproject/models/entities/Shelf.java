@@ -1,6 +1,7 @@
 package io.altar.jseproject.models.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -19,7 +20,7 @@ public class Shelf extends Entity_ {
 	public static final String GET_SHELF_COUNT = "getShelfCount";
 	
 	private int capacity;	
-	@OneToOne
+	@ManyToOne
 	private Product product;
 	private double dailyPrice;
 

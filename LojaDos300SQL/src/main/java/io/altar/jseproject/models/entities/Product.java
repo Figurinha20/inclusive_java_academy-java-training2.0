@@ -12,6 +12,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @NamedQueries({
@@ -25,13 +26,14 @@ public class Product extends Entity_ {
 	public static final String GET_PRODUCT_COUNT = "getProductCount";
 
 	private String name;
+	@JsonIgnoreProperties("product")
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = false)
 	private List<Shelf> shelves;
 	private double pvp;
 	private double discount;
 	private double iva;
 
-	public Product() {}
+	public Product() {}	
 
 	@JsonIgnore
 	public String getRealPrice() {
